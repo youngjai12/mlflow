@@ -1,0 +1,10 @@
+name: windpower
+
+
+python_env: python_env.yaml
+
+entry_points:
+    main:
+        parameters:
+            til_train_date: {type: str, default: "2018-02-01"}
+        command: "python dl_model.py {til_train_date}"
