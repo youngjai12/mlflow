@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-setosa
+  namespace: shadow-ab
+  labels:
+    app: iris-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iris
+  template:
+    metadata:
+      labels:
+        app: iris
+        version: setosa
+      annotations:
+        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/proxyCPU: "128m"
+        sidecar.istio.io/proxyMemory: "128Mi"
+        proxy.istio.io/config: "{'concurrency':'4'}"
+    spec:
+      containers:
+        - name: iris-setosa
+          image: youngjaikwon/local_iris_setosa:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5306
+          resources:
+            limits:
+              cpu: 500m
+              memory: "300Mi"
+            requests:
+              cpu: 500m
+              memory: "300Mi"
+          volumeMounts:
+            - name: workdir
+              mountPath: /workdir
+          env:
+            - name: WORKERS
+              value: "4"
+
+      volumes:
+        - name: workdir
+          emptyDir: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-logistic
+  namespace: shadow-ab
+  labels:
+    app: iris-logistic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iris
+  template:
+    metadata:
+      labels:
+        app: iris
+        version: logistic
+      annotations:
+        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/proxyCPU: "128m"
+        sidecar.istio.io/proxyMemory: "128Mi"
+        proxy.istio.io/config: "{'concurrency':'4'}"
+    spec:
+      containers:
+        - name: iris-logistic
+          image: youngjaikwon/iris_logistic:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5306
+          resources:
+            limits:
+              cpu: 500m
+              memory: "500Mi"
+            requests:
+              cpu: 500m
+              memory: "300Mi"
+          volumeMounts:
+            - name: workdir
+              mountPath: /workdir
+          env:
+            - name: WORKERS
+              value: "4"
+      volumes:
+        - name: workdir
+          emptyDir: {}
