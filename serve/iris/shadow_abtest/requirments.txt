@@ -1,0 +1,7 @@
+fastapi==0.109.2
+onnxruntime
+uvicorn
+gunicorn
+uvloop
+Pillow
+pydantic
