@@ -1,0 +1,11 @@
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "windpower-tensorflow"
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: tensorflow
+        version: "1"
+      storageUri: "pvc://task-pv-claim/model"
